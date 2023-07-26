@@ -1,15 +1,36 @@
 const express = require('express');
+
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
-const authMiddleware = require('./middleware/auth');
-const userRoutes = require('./routes/user');
-const { connectToDatabase } = require('./utils/database');
+
+// Middleware
+app.use(express.json());
 
 // Connect to MongoDB
-connectToDatabase();
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Error connecting to MongoDB:', err));
 
-app.use(express.json());
-app.use('/user', authMiddleware.authenticate, userRoutes);
+// Routes
+const authRoutes = require('./routes/auth');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/users');
+const cartRoutes = require('./routes/cartRoutes');
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRoutes);
+app.use('/api/users', userRoutes);
+
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;

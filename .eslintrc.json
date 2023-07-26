@@ -1,0 +1,17 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": "eslint:recommended",
+  "plugins": ["promise"],
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "rules": {
+    "promise/catch-or-return": "error",
+    "unused-imports/no-unused-imports": "off"
+
+  }
+}
+
